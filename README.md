@@ -20,7 +20,6 @@ The project uses CommonLibSSE‑NG, which depends on several libraries. You must
 Open a command prompt in your vcpkg folder (C:\vcpkg) and run:
 vcpkg install spdlog:x64-windows-static-md
 
-
 If during CMake configuration you get errors about missing packages (e.g., fmt, etc.), install them the same way:
 vcpkg install <package-name>:x64-windows-static-md
 
@@ -31,6 +30,11 @@ The triplet must match the one used in the preset (x64-windows-static-md).
 1. Clone the repository with submodules:
 git clone --recursive https://github.com/your-username/DovaJump.git
 cd DovaJump
+If you forgot `--recursive`, you can initialise the submodules later:
+git submodule update --init --recursive
+
+**Alternative (if submodules fail for any reason):**  
+Download CommonLibSSE‑NG manually from https://github.com/CharmedBaryon/CommonLibSSE-NG/tree/v3.4.0, create the folder `external/CommonLibSSE-NG` in the project root, and extract the archive there. No environment variable is needed.
 
 2. The project includes a CMakePresets.json file that already points to C:\vcpkg and uses the triplet x64-windows-static-md. Just run:
 cmake --preset x64-Release
