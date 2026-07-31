@@ -1,31 +1,32 @@
 # DovaJump
-Quite a bit of Havok-related code comes from [PLANCK](https://github.com/adamhynek/activeragdoll) and [HIGGS](https://github.com/adamhynek/higgs)
 
-The debug drawing functionality is hastily put together from [SmoothCam](https://github.com/mwilsnd/SkyrimSE-SmoothCam)'s code that draws the arrow trajectory. I know it's horribly hacked together but it's just a debug feature, I didn't have time or a real reason to refactor it yet.
- 
+This is not the final version of the code—merely a stable, properly functioning one. The build is currently under development.
+
+I would like to express my sincere gratitude to the author of the BetterJumping mod for making their plugin's source code publicly available.
+I studied the code thoroughly and figured out how to implement my own ideas.
 
 ## Requirements
-* [CMake](https://cmake.org/)
-	* Add this to your `PATH`
-* [The Elder Scrolls V: Skyrim Special Edition](https://store.steampowered.com/app/489830)
-	* Add the environment variable `CompiledPluginsPath` to point to the folder where you want the .dll to be copied after building
-* [Vcpkg](https://github.com/microsoft/vcpkg)
-	* Add the environment variable `VCPKG_ROOT` with the value as the path to the folder containing vcpkg
-* [Visual Studio Community 2022](https://visualstudio.microsoft.com/)
-	* Desktop development with C++
-* [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG/tree/v3.4.0)
-	* Add the environment variable `CommonLibSSEPath_NG` with the value as the path to the folder containing CommonLibSSE-NG
 
-## User Requirements
+* [CMake](https://cmake.org/) (≥ 3.24)
+    * Add this to your `PATH`
+* [The Elder Scrolls V: Skyrim Special Edition](https://store.steampowered.com/app/489830)
+    * (Optional) Add the environment variable `CompiledPluginsPath` to point to the folder where you want the .dll to be copied after building
+* [Vcpkg](https://github.com/microsoft/vcpkg) — required for spdlog dependency
+    * Add the environment variable `VCPKG_ROOT` with the value as the path to the folder containing vcpkg
+* [Visual Studio Community 2022](https://visualstudio.microsoft.com/)
+    * Desktop development with C++
+* [Git](https://git-scm.com/) — to clone the repository with submodules
+* [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG/tree/v3.4.0)
+    * This is included as a submodule in `external/CommonLibSSE-NG`. No separate environment variable is required if you clone with `--recursive`.
+
+## User Requirements (in-game)
+
 * [Address Library for SKSE](https://www.nexusmods.com/skyrimspecialedition/mods/32444)
 
 ## Building
-```
-git clone https://github.com/ersh1/Precision/
-cd Precision
-git submodule init
-git submodule update
 
-cmake --preset vs2022-windows
-cmake --build build --config Release
-```
+Clone the repository with submodules:
+
+```bash
+git clone --recursive https://github.com/your-username/DovaJump.git
+cd DovaJump
