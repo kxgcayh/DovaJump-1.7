@@ -20,12 +20,9 @@ The project uses CommonLibSSE‑NG, which depends on several libraries. You must
 Open a command prompt in your vcpkg folder (C:\vcpkg) and run:
 vcpkg install spdlog:x64-windows-static-md
 
-text
 
 If during CMake configuration you get errors about missing packages (e.g., fmt, etc.), install them the same way:
 vcpkg install <package-name>:x64-windows-static-md
-
-text
 
 The triplet must match the one used in the preset (x64-windows-static-md).
 
@@ -35,13 +32,9 @@ The triplet must match the one used in the preset (x64-windows-static-md).
 git clone --recursive https://github.com/your-username/DovaJump.git
 cd DovaJump
 
-text
-
 2. The project includes a CMakePresets.json file that already points to C:\vcpkg and uses the triplet x64-windows-static-md. Just run:
 cmake --preset x64-Release
 cmake --build out/build/x64-Release --config Release
-
-text
 
 3. After a successful build, the plugin DovaJump.dll will be placed in out/build/x64-Release/. Copy it to your Skyrim Data/SKSE/Plugins/ folder.
 
