@@ -25,6 +25,9 @@ vcpkg install <package-name>:x64-windows-static-md
 
 The triplet must match the one used in the preset (x64-windows-static-md).
 
+## User Requirements
+Address Library for SKSE
+
 ## Building
 
 1. Clone the repository with submodules:
