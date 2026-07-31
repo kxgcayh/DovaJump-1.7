@@ -2,7 +2,7 @@
 
 This is not the final version of the code—merely a stable, properly functioning one. The build is currently under development.
 
-I would like to express my sincere gratitude to the author of the BetterJumping mod (https://www.nexusmods.com/skyrimspecialedition/mods/18967) for making their plugin's source code publicly available. I studied the code thoroughly and figured out how to implement my own ideas.
+I would like to express my sincere gratitude to the author of the Better Jumping mod (https://www.nexusmods.com/skyrimspecialedition/mods/18967) for making their plugin's source code publicly available. I studied the code thoroughly and figured out how to implement my own ideas.
 
 ## Requirements
 
