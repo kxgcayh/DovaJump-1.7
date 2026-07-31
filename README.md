@@ -2,7 +2,7 @@
 
 This is not the final version of the code—merely a stable, properly functioning one. The build is currently under development.
 
-I would like to express my sincere gratitude to the author of the Better Jumping mod (https://www.nexusmods.com/skyrimspecialedition/mods/18967) for making their plugin's source code publicly available. I studied the code thoroughly and figured out how to implement my own ideas.
+I would like to express my sincere gratitude to the author of the [Better Jumping mod](https://www.nexusmods.com/skyrimspecialedition/mods/18967) for making their plugin's source code publicly available. I studied the code thoroughly and figured out how to implement my own ideas.
 
 ## Requirements
 
@@ -11,7 +11,7 @@ I would like to express my sincere gratitude to the author of the Better Jumping
 - Git – to clone the repository
 - Vcpkg – installed at C:\vcpkg (or adjust the path in the preset)
 - Skyrim Special Edition
-- Address Library for SKSE – required at runtime
+- [Address Library for SKSE](https://www.nexusmods.com/skyrimspecialedition/mods/32444) – required at runtime.
 
 ## Dependencies (via vcpkg)
 
@@ -24,9 +24,6 @@ If during CMake configuration you get errors about missing packages (e.g., fmt, 
 vcpkg install <package-name>:x64-windows-static-md
 
 The triplet must match the one used in the preset (x64-windows-static-md).
-
-## User Requirements
-Address Library for SKSE
 
 ## Building
 
