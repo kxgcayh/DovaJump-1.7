@@ -43,7 +43,7 @@ namespace DovaJump
 {
     using namespace std::chrono;
 
-    // ---------- Settings ----------
+    // Settings
     static bool  g_modEnabled = true;
     static float g_chargeTime = 4.0f;
     static float g_maxMultiplier = 3.0f;
@@ -87,7 +87,7 @@ namespace DovaJump
     static constexpr float kNpcMinDistance = 40.0f;
     static bool  g_verboseLogging = true;
 
-    // ---------- State ----------
+    // State
     static std::atomic<bool>  g_isHolding{ false };
     static std::atomic<float> g_currentChargeMult{ 1.0f };
     static steady_clock::time_point g_holdStart;
@@ -104,9 +104,9 @@ namespace DovaJump
 
     static steady_clock::time_point g_lastGroundedTime;
     static bool                     g_wasGrounded = false;
-    static steady_clock::time_point g_postJumpBlockUntil;   // блокировка обновления grounded после прыжка
+    static steady_clock::time_point g_postJumpBlockUntil;   // The update lock is blocked after the jump
 
-    // Для динамического управления хуками
+    // For dynamic hook management
     static RE::JumpHandler* g_handler = nullptr;
     static void** g_oldVtable = nullptr;
     static uintptr_t multCallSite = 0;
@@ -129,7 +129,7 @@ namespace DovaJump
         return src + 5 + static_cast<uintptr_t>(*reinterpret_cast<int32_t*>(src + 5 - 4));
     }
 
-    // ---------- Serialization (version 11) ----------
+    // Serialization (version 11)
     static void SaveSettings(SKSE::SerializationInterface* serde) {
         if (!serde->OpenRecord('DOJ_', 11)) return;
         serde->WriteRecordData(&g_modEnabled, sizeof(bool));
@@ -275,18 +275,18 @@ namespace DovaJump
         }
     }
 
-    // ---------- Papyrus API ----------
+    // Papyrus API
     static void SetModEnabled(RE::StaticFunctionTag*, bool enable) {
         if (g_modEnabled == enable) return;
         g_modEnabled = enable;
         RE::DebugNotification(enable ? "DovaJump enabled" : "DovaJump disabled");
 
-        // Управление vtable хуком
+        // Managing the vtable hook
         if (g_handler && g_oldVtable && g_clonedVtable) {
             *reinterpret_cast<void***>(g_handler) = enable ? g_clonedVtable : g_oldVtable;
         }
 
-        // Управление трамплином MultiplyJump
+        // MultiplyJump Controls
         if (enable && !g_trampolineActive) {
             auto& trampoline = SKSE::GetTrampoline();
             trampoline.write_call<5>(multCallSite, reinterpret_cast<uintptr_t>(&MultiplyJump));
@@ -444,7 +444,7 @@ namespace DovaJump
         return true;
     }
 
-    // ---------- Jump Multiplier ----------
+    //Jump Multiplier
     static float MultiplyJump() {
         if (!g_modEnabled) return g_originalMult();
         float base = g_originalMult();
@@ -460,7 +460,7 @@ namespace DovaJump
         return result;
     }
 
-    // ---------- CanProcess ----------
+    //CanProcess
     static bool HookedCanProcess(RE::JumpHandler* a_this, RE::InputEvent* a_event) {
         if (!g_modEnabled) return g_originalCanProcess(a_this, a_event);
         if (!a_event || a_event->GetEventType() != RE::INPUT_EVENT_TYPE::kButton)
@@ -480,7 +480,7 @@ namespace DovaJump
         return g_originalCanProcess(a_this, a_event);
     }
 
-    // ---------- Хелпер получения актора из контакта ----------
+    // Helper for getting an actor from a contact
     static RE::Actor* GetActorFromContact(const RE::hkpRootCdPoint& a_point, RE::Actor* a_player)
     {
         auto tryGetActor = [&](const RE::hkpCollidable* a_collidable) -> RE::Actor*
@@ -496,7 +496,7 @@ namespace DovaJump
         return nullptr;
     }
 
-    // ---------- Функция для применения NPC толчка ----------
+    // Функция для применения NPC толчка - Function for applying NPC push
     static void ApplyNpcCollision(RE::Actor* player, RE::Actor* target,
         const RE::NiPoint3& contactPos, const RE::NiPoint3& contactNormal)
     {
@@ -586,7 +586,7 @@ namespace DovaJump
         }
     }
 
-    // ---------- NPC wall stagger (направленный стаггер без Skyphoria) ----------
+    // NPC wall stagger (направленный стаггер без Skyphoria)
     static void ApplyNpcWallStagger(RE::Actor* target, const RE::NiPoint3& direction, float strength)
     {
         if (!target || target->IsDead()) return;
@@ -620,7 +620,7 @@ namespace DovaJump
             direction.x, direction.y, direction.z, strength);
     }
 
-    // ---------- NPC collision processing ----------
+    // NPC collision processing
     static void ProcessNpcCollisions(RE::PlayerCharacter* player, RE::bhkCharacterController* cc)
     {
         if (!g_npcCollisionResponse) return;
@@ -648,7 +648,7 @@ namespace DovaJump
         }
     }
 
-    // ---------- Wall Jump Helper (с инерцией и поддержкой спринта для OAR) ----------
+    // Wall Jump Helper (с инерцией и поддержкой спринта для OAR - будущее)
     static bool TryWallJump(RE::PlayerCharacter* player, float holdTime, RE::ButtonEvent* buttonEvent) {
         logger::info("[WallJump] TryWallJump called, holdTime={:.3f}s", holdTime);
 
@@ -793,7 +793,7 @@ namespace DovaJump
         RE::hkVector4 newVel(newX, newY, newZ, 0.0f);
         charController->SetLinearVelocityImpl(newVel);
 
-        // --- Принудительный перезапуск анимации с явной установкой спринта ---
+        //  Принудительный перезапуск анимации с явной установкой спринта
         player->SetGraphVariableBool("bInJumpState", false);
         player->SetGraphVariableBool("bInAir", false);
         player->SetGraphVariableFloat("fJumpHeight", 1.0f);
@@ -859,7 +859,7 @@ namespace DovaJump
         return true;
     }
 
-    // ---------- Хелпер состояния ванильного прыжка ----------
+    //Хелпер состояния ванильного прыжка
     static bool GetVanillaJumpState(RE::PlayerCharacter* player,
         RE::hkpSurfaceInfo::SupportedState& outSupport,
         bool& outCanJump)
@@ -876,7 +876,7 @@ namespace DovaJump
         return true;
     }
 
-    // ---------- Slope Jump ----------
+    // Slope Jump -
     static void DoSlopeJump(RE::PlayerCharacter* player, float elapsed, RE::PlayerControls* controls, RE::ButtonEvent* button)
     {
         auto* cc = player->GetCharController();
@@ -920,7 +920,7 @@ namespace DovaJump
         }
     }
 
-    // ---------- Обновление ассиста ----------
+    // Обновление ассиста
     static void UpdateAssist()
     {
         if (!g_modEnabled) return;
@@ -1040,7 +1040,7 @@ namespace DovaJump
         *reinterpret_cast<int*>(&m._size) = writeIdx;
     }
 
-    // ---------- Input Sink ----------
+    // Input Sink
     class JumpInputSink : public RE::BSTEventSink<RE::InputEvent*>
     {
     public:
@@ -1192,11 +1192,11 @@ namespace DovaJump
         }
     };
 
-    // ---------- Installation ----------
+    // installation
     static void InstallHooks() {
         logger::info("[Init] DovaJump v0.9.1.3 ready (wall jump with sprint animation)");
 
-        // ---------- Настройки больше не сбрасываются здесь ----------
+        // Настройки больше не сбрасываются здесь
         // Их дефолты заданы при статической инициализации, а реальные значения
         // загружаются из сейва через LoadSettings.
 
