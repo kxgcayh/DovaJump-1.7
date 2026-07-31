@@ -34,7 +34,7 @@ If you forgot `--recursive`, you can initialise the submodules later:
 git submodule update --init --recursive
 
 **Alternative (if submodules fail for any reason):**  
-Download CommonLibSSE‑NG manually from https://github.com/CharmedBaryon/CommonLibSSE-NG/tree/v3.4.0, create the folder `external/CommonLibSSE-NG` in the project root, and extract the archive there. No environment variable is needed.
+Download CommonLibSSE‑NG manually from https://github.com/CharmedBaryon/CommonLibSSE-NG/releases/tag/v3.7.0, create the folder `external/CommonLibSSE-NG` in the project root, and extract the archive there. No environment variable is needed.
 
 2. The project includes a CMakePresets.json file that already points to C:\vcpkg and uses the triplet x64-windows-static-md. Just run:
 cmake --preset x64-Release
