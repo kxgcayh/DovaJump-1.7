@@ -1,0 +1,3 @@
+{
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/out/build/x64-Release/compile_commands.json"
+}

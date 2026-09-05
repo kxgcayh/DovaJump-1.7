@@ -11,7 +11,8 @@ static void SetupLog()
 {
     // Получаем путь к папке с логами SKSE (Documents/My Games/Skyrim Special Edition/SKSE/)
     auto logsFolder = SKSE::log::log_directory();
-    if (!logsFolder) {
+    if (!logsFolder)
+    {
         SKSE::stl::report_and_fail("Failed to find SKSE log directory");
     }
 
@@ -25,7 +26,7 @@ static void SetupLog()
     auto debugSink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
 
     // Собираем логгер с этими приёмниками
-    auto log = std::make_shared<spdlog::logger>("global log", spdlog::sinks_init_list{ fileSink, debugSink });
+    auto log = std::make_shared<spdlog::logger>("global log", spdlog::sinks_init_list{fileSink, debugSink});
     log->set_level(spdlog::level::info);
     log->flush_on(spdlog::level::info);
 

@@ -9,17 +9,27 @@
 #include "RE/N/NiMatrix3.h"
 #include "RE/N/NiTransform.h"
 
-struct ActorHandleHash {
-    size_t operator()(const RE::ActorHandle& h) const noexcept {
+struct ActorHandleHash
+{
+    size_t operator()(const RE::ActorHandle &h) const noexcept
+    {
         return std::hash<uint32_t>{}(h.native_handle());
     }
 };
 
 namespace Skyphoria
 {
-    enum class Phase { Impact, AnkleHip, Swing, DoubleSupport, PostStable };
+    enum class Phase
+    {
+        Impact,
+        AnkleHip,
+        Swing,
+        DoubleSupport,
+        PostStable
+    };
 
-    struct Settings {
+    struct Settings
+    {
         float impactImpulseMult = 5.0f;
         float gravity = 600.0f;
         float footLength = 30.0f, footWidth = 15.0f;
@@ -32,10 +42,11 @@ namespace Skyphoria
         int footContactRequiredFrames = 5;
         float standingPelvisHeight = 120.0f;
         float startupGracePeriod = 0.5f;
-        bool verboseLogging = true;
+        bool verboseLogging = false;
     };
 
-    struct EuphoriaState {
+    struct EuphoriaState
+    {
         float elapsed = 0.0f;
         RE::ActorHandle actorHandle;
         RE::NiPoint3 initialImpulse;
@@ -66,12 +77,13 @@ namespace Skyphoria
     extern std::mutex g_stateMutex;
     extern Settings g_settings;
 
-    class GlobalContactListener : public RE::hkpContactListener {
+    class GlobalContactListener : public RE::hkpContactListener
+    {
     public:
-        void ContactPointCallback(const RE::hkpContactPointEvent& event) override;
+        void ContactPointCallback(const RE::hkpContactPointEvent &event) override;
     };
 
     void Init();
-    void ApplyEuphoriaStagger(RE::Actor* target, const RE::NiPoint3& impulse);
+    void ApplyEuphoriaStagger(RE::Actor *target, const RE::NiPoint3 &impulse);
     void Update(float deltaTime);
 }

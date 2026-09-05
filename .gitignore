@@ -1,0 +1,27 @@
+# Build output
+out/
+build/
+cmake-build-*/
+
+# vcpkg generated files
+vcpkg_installed/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Compiled binaries
+*.dll
+*.exe
+*.pdb
+*.ilk
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+
+# Logs
+*.log

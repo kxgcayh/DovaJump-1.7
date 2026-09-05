@@ -1,0 +1,40 @@
+#pragma once
+
+#include "RE/Skyrim.h"
+
+#include <algorithm>
+#include <array>
+#include <atomic>
+#include <bit>
+#include <cassert>
+#include <chrono>
+#include <cmath>
+#include <compare>
+#include <concepts>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <filesystem>
+#include <format>
+#include <functional>
+#include <limits>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <random>
+#include <ranges>
+#include <set>
+#include <span>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <tuple>
+#include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <variant>
+#include <vector>
+
+#include <spdlog/spdlog.h>

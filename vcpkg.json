@@ -1,0 +1,17 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+    "name": "agility",
+    "version-string": "0.0.1",
+    "dependencies": [
+        "fmt",
+        "rapidcsv",
+        "spdlog",
+        "xbyak",
+        "catch2",
+        "directxmath",
+        "directxtk",
+        "nlohmann-json",
+        "simpleini",
+        "toml11"
+    ]
+}
