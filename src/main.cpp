@@ -33,6 +33,7 @@
 namespace DovaJump
 {
     using namespace std::chrono;
+    using namespace std::literals;
 
     // Settings
     static bool g_modEnabled = true;
@@ -605,14 +606,16 @@ namespace DovaJump
         float mult = g_currentChargeMult.exchange(1.0f);
         if (mult <= 1.01f)
             return base;
+
         float result = base * mult;
+
         logger::info("[Jump] Charged: {:.2f}x, height={:.2f}", mult, result);
+
         if (g_enableNotifications)
         {
-            char buf[128];
-            snprintf(buf, sizeof(buf), "Charged Jump: %.1fx height", mult);
-            SKSE::stl::report_and_fail(buf);
+            logger::info("[Jump] Charged: {:.1f}x height", mult);
         }
+
         return result;
     }
 
@@ -1148,10 +1151,9 @@ namespace DovaJump
         g_lastGroundedTime = steady_clock::time_point();
 
         if (g_enableNotifications)
-            SKSE::log::info("Wall Jump!");
+            logger::info("[WallJump] Jumped: dir=({:.2f},{:.2f},{:.2f}), H={:.1f}, V={:.1f}, Vz={:.1f}, h_max={:.1f}, sprint={}",
 
-        logger::info("[WallJump] Jumped: dir=({:.2f},{:.2f},{:.2f}), H={:.1f}, V={:.1f}, Vz={:.1f}, h_max={:.1f}, sprint={}",
-                     jumpDir.x, jumpDir.y, jumpDir.z, hForce, vForce, newZ, h_max, isSprinting ? "yes" : "no");
+                         jumpDir.x, jumpDir.y, jumpDir.z, hForce, vForce, newZ, h_max, isSprinting ? "yes" : "no");
 
         if (g_obstacleBypassEnabled)
         {
