@@ -15,36 +15,24 @@ set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(COMMONLIBSSE_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ENABLE_SKYRIM_VR OFF CACHE BOOL "" FORCE)
 
-# Locate CommonLibSSE-NG
+# Locate CommonLibSSE-NG submodule
 if(NOT DEFINED CommonLibPath)
     if(DEFINED ENV{CommonLibPath})
         set(CommonLibPath "$ENV{CommonLibPath}")
     elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/extern/CommonLibSSE-NG/CMakeLists.txt")
         set(CommonLibPath "${CMAKE_CURRENT_SOURCE_DIR}/extern/CommonLibSSE-NG")
-    elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../CommonLibSSE-NG/CMakeLists.txt")
-        set(CommonLibPath "${CMAKE_CURRENT_SOURCE_DIR}/../CommonLibSSE-NG")
-    elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../CommonLibSSE-NG/CMakeLists.txt")
-        set(CommonLibPath "${CMAKE_CURRENT_SOURCE_DIR}/../../CommonLibSSE-NG")
     endif()
 endif()
 
 if(DEFINED CommonLibPath AND EXISTS "${CommonLibPath}/CMakeLists.txt")
-    message(STATUS "Using CommonLibSSE-NG from: ${CommonLibPath}")
+    message(STATUS "Using CommonLibSSE-NG submodule from: ${CommonLibPath}")
     add_subdirectory(
         ${CommonLibPath}
         CommonLibSSE
         EXCLUDE_FROM_ALL
     )
 else()
-    message(STATUS "Local CommonLibSSE-NG not found, fetching via FetchContent...")
-    include(FetchContent)
-    FetchContent_Declare(
-        CommonLibSSE
-        GIT_REPOSITORY https://github.com/alandtse/CommonLibSSE-NG.git
-        GIT_TAG ng
-        GIT_SHALLOW TRUE
-    )
-    FetchContent_MakeAvailable(CommonLibSSE)
+    message(FATAL_ERROR "CommonLibSSE-NG submodule not found. Please run: git submodule update --init --recursive")
 endif()
 
 add_compile_definitions(NOMINMAX)
