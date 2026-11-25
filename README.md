@@ -1,5 +1,10 @@
 # DovaJump (Skyrim AE 1.7.104+ & SE/VR Support)
 
+[![GitHub downloads](https://img.shields.io/github/downloads/kxgcayh/DovaJump-1.7/total)](https://github.com/kxgcayh/DovaJump-1.7/releases)
+[![Latest release](https://img.shields.io/github/v/release/kxgcayh/DovaJump-1.7)](https://github.com/kxgcayh/DovaJump-1.7/releases/latest)
+[![License](https://img.shields.io/github/license/kxgcayh/DovaJump-1.7)](LICENSE)
+[![Skyrim](https://img.shields.io/badge/Skyrim-SE%20%2F%20AE%20%2F%201.7.99%2B-blue)](#technical-overview--1.7.104-root-cause-analysis)
+
 DovaJump is an SKSE64 gameplay plugin for The Elder Scrolls V: Skyrim that provides advanced aerial acrobatics, including configurable double jumps, wall jumps, enemy stagger jumps, and sprint/charge jump assist.
 
 This repository provides the updated, unified source code for DovaJump with native support for Skyrim Anniversary Edition (1.7.99 / 1.7.104+), pre-load gate compliance for SKSE 2.3.1+, and backward compatibility with Skyrim SE 1.5.97 and AE 1.6.x.
