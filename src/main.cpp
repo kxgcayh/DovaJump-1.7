@@ -30,6 +30,13 @@
 #include "util/Requirements.h"
 #include "PCH.h"
 
+// hkQuadReal is __m128: clang indexes it like an array, MSVC does not. Read and write one lane portably.
+namespace
+{
+    inline float& Lane(RE::hkQuadReal& a_quad, int a_lane) { return reinterpret_cast<float*>(&a_quad)[a_lane]; }
+    inline float Lane(const RE::hkQuadReal& a_quad, int a_lane) { return reinterpret_cast<const float*>(&a_quad)[a_lane]; }
+}
+
 namespace DovaJump
 {
     using namespace std::chrono;
@@ -729,9 +736,9 @@ namespace DovaJump
         {
             RE::hkVector4 vel;
             npcController->GetLinearVelocityImpl(vel);
-            vel.quad[0] += hitVelocity.x;
-            vel.quad[1] += hitVelocity.y;
-            vel.quad[2] += hitVelocity.z;
+            Lane(vel.quad, 0) += hitVelocity.x;
+            Lane(vel.quad, 1) += hitVelocity.y;
+            Lane(vel.quad, 2) += hitVelocity.z;
             npcController->SetLinearVelocityImpl(vel);
         }
 
@@ -762,9 +769,9 @@ namespace DovaJump
             {
                 RE::hkVector4 vel;
                 playerCC->GetLinearVelocityImpl(vel);
-                vel.quad[0] -= toNPC.x * g_playerRecoilStrength;
-                vel.quad[1] -= toNPC.y * g_playerRecoilStrength;
-                vel.quad[2] += g_playerRecoilStrength * 0.1f;
+                Lane(vel.quad, 0) -= toNPC.x * g_playerRecoilStrength;
+                Lane(vel.quad, 1) -= toNPC.y * g_playerRecoilStrength;
+                Lane(vel.quad, 2) += g_playerRecoilStrength * 0.1f;
                 playerCC->SetLinearVelocityImpl(vel);
             }
         }
@@ -798,9 +805,9 @@ namespace DovaJump
         {
             RE::hkVector4 vel;
             cc->GetLinearVelocityImpl(vel);
-            vel.quad[0] += direction.x * strength;
-            vel.quad[1] += direction.y * strength;
-            vel.quad[2] += direction.z * strength * 0.5f;
+            Lane(vel.quad, 0) += direction.x * strength;
+            Lane(vel.quad, 1) += direction.y * strength;
+            Lane(vel.quad, 2) += direction.z * strength * 0.5f;
             cc->SetLinearVelocityImpl(vel);
         }
 
@@ -840,13 +847,13 @@ namespace DovaJump
             }
 
             RE::NiPoint3 contactPos(
-                point.contact.position.quad[0],
-                point.contact.position.quad[1],
-                point.contact.position.quad[2]);
+                Lane(point.contact.position.quad, 0),
+                Lane(point.contact.position.quad, 1),
+                Lane(point.contact.position.quad, 2));
             RE::NiPoint3 normal(
-                point.contact.separatingNormal.quad[0],
-                point.contact.separatingNormal.quad[1],
-                point.contact.separatingNormal.quad[2]);
+                Lane(point.contact.separatingNormal.quad, 0),
+                Lane(point.contact.separatingNormal.quad, 1),
+                Lane(point.contact.separatingNormal.quad, 2));
 
             ApplyNpcCollision(player, target, contactPos, normal);
         }
@@ -913,17 +920,17 @@ namespace DovaJump
         for (const RE::hkpRootCdPoint &point : manifold)
         {
             RE::NiPoint3 normal(
-                point.contact.separatingNormal.quad[0],
-                point.contact.separatingNormal.quad[1],
-                point.contact.separatingNormal.quad[2]);
+                Lane(point.contact.separatingNormal.quad, 0),
+                Lane(point.contact.separatingNormal.quad, 1),
+                Lane(point.contact.separatingNormal.quad, 2));
 
             if (std::abs(normal.z) < 0.95f)
             {
                 contactNormal = normal;
                 contactPos = RE::NiPoint3(
-                    point.contact.position.quad[0],
-                    point.contact.position.quad[1],
-                    point.contact.position.quad[2]);
+                    Lane(point.contact.position.quad, 0),
+                    Lane(point.contact.position.quad, 1),
+                    Lane(point.contact.position.quad, 2));
                 contactedActor = GetActorFromContact(point, player);
                 found = true;
                 break;
@@ -1017,9 +1024,9 @@ namespace DovaJump
         // Сохранение инерции и расчёт новой скорости (без дополнительных множителей)
         RE::hkVector4 curVel;
         charController->GetLinearVelocityImpl(curVel);
-        float oldX = curVel.quad[0];
-        float oldY = curVel.quad[1];
-        float oldZ = curVel.quad[2];
+        float oldX = Lane(curVel.quad, 0);
+        float oldY = Lane(curVel.quad, 1);
+        float oldZ = Lane(curVel.quad, 2);
 
         float newX = jumpDir.x * hForce + oldX;
         float newY = jumpDir.y * hForce + oldY;
@@ -1235,9 +1242,9 @@ namespace DovaJump
         RE::hkVector4 curVel;
         charController->GetLinearVelocityImpl(curVel);
 
-        const float oldX = curVel.quad[0];
-        const float oldY = curVel.quad[1];
-        const float oldZ = curVel.quad[2];
+        const float oldX = Lane(curVel.quad, 0);
+        const float oldY = Lane(curVel.quad, 1);
+        const float oldZ = Lane(curVel.quad, 2);
 
         //
         // Fixed double-jump strength.
@@ -1401,8 +1408,8 @@ namespace DovaJump
 
         RE::hkVector4 vel;
         cc->GetLinearVelocityImpl(vel);
-        vel.quad[0] = 0.0f;
-        vel.quad[1] = 0.0f;
+        Lane(vel.quad, 0) = 0.0f;
+        Lane(vel.quad, 1) = 0.0f;
         cc->SetLinearVelocityImpl(vel);
 
         bcc->flags.set(RE::CHARACTER_FLAGS::kCanJump);
@@ -1497,9 +1504,9 @@ namespace DovaJump
 
             auto *bcc = static_cast<RE::bhkCharacterController *>(cc);
             RE::NiPoint3 normal(
-                bcc->surfaceInfo.surfaceNormal.quad[0],
-                bcc->surfaceInfo.surfaceNormal.quad[1],
-                bcc->surfaceInfo.surfaceNormal.quad[2]);
+                Lane(bcc->surfaceInfo.surfaceNormal.quad, 0),
+                Lane(bcc->surfaceInfo.surfaceNormal.quad, 1),
+                Lane(bcc->surfaceInfo.surfaceNormal.quad, 2));
             g_wasOnSlope = (std::abs(normal.z) < 0.9f);
         }
 
@@ -1543,8 +1550,8 @@ namespace DovaJump
         for (int i = 0; i < static_cast<int>(m.size()); ++i)
         {
             const auto &pt = m[i];
-            float depth = std::abs(pt.contact.separatingNormal.quad[3]);
-            float nz = pt.contact.separatingNormal.quad[2];
+            float depth = std::abs(Lane(pt.contact.separatingNormal.quad, 3));
+            float nz = Lane(pt.contact.separatingNormal.quad, 2);
 
             if (nz < -0.5f && depth < g_ceilingMicroThreshold)
                 continue;
@@ -1553,17 +1560,17 @@ namespace DovaJump
             {
                 RE::hkVector4 vel;
                 cc->GetLinearVelocityImpl(vel);
-                if (vel.quad[2] > 50.0f)
+                if (Lane(vel.quad, 2) > 50.0f)
                 {
-                    RE::NiPoint3 normal(pt.contact.separatingNormal.quad[0],
-                                        pt.contact.separatingNormal.quad[1], 0.0f);
+                    RE::NiPoint3 normal(Lane(pt.contact.separatingNormal.quad, 0),
+                                        Lane(pt.contact.separatingNormal.quad, 1), 0.0f);
                     float len = std::sqrt(normal.x * normal.x + normal.y * normal.y);
                     if (len > 0.01f)
                     {
                         normal.x /= len;
                         normal.y /= len;
-                        vel.quad[0] += -normal.x * g_ledgeMagnetStrength;
-                        vel.quad[1] += -normal.y * g_ledgeMagnetStrength;
+                        Lane(vel.quad, 0) += -normal.x * g_ledgeMagnetStrength;
+                        Lane(vel.quad, 1) += -normal.y * g_ledgeMagnetStrength;
                         cc->SetLinearVelocityImpl(vel);
                         logger::info("[Assist] Ledge Magnet applied");
                     }
@@ -1575,18 +1582,18 @@ namespace DovaJump
             {
                 RE::hkVector4 vel;
                 cc->GetLinearVelocityImpl(vel);
-                if (vel.quad[2] >= g_vaultRequiredSpeed)
+                if (Lane(vel.quad, 2) >= g_vaultRequiredSpeed)
                 {
-                    RE::NiPoint3 normal(pt.contact.separatingNormal.quad[0],
-                                        pt.contact.separatingNormal.quad[1], 0.0f);
+                    RE::NiPoint3 normal(Lane(pt.contact.separatingNormal.quad, 0),
+                                        Lane(pt.contact.separatingNormal.quad, 1), 0.0f);
                     float len = std::sqrt(normal.x * normal.x + normal.y * normal.y);
                     if (len > 0.01f)
                     {
                         normal.x /= len;
                         normal.y /= len;
-                        vel.quad[0] = -normal.x * 200.0f;
-                        vel.quad[1] = -normal.y * 200.0f;
-                        vel.quad[2] = std::max(vel.quad[2], 200.0f);
+                        Lane(vel.quad, 0) = -normal.x * 200.0f;
+                        Lane(vel.quad, 1) = -normal.y * 200.0f;
+                        Lane(vel.quad, 2) = std::max(Lane(vel.quad, 2), 200.0f);
                         cc->SetLinearVelocityImpl(vel);
                         logger::info("[Assist] Vault Snap applied");
                         proxy->manifold = {};
@@ -1692,9 +1699,9 @@ namespace DovaJump
                                     {
                                         auto *bcc = static_cast<RE::bhkCharacterController *>(player->GetCharController());
                                         RE::NiPoint3 normal(
-                                            bcc->surfaceInfo.surfaceNormal.quad[0],
-                                            bcc->surfaceInfo.surfaceNormal.quad[1],
-                                            bcc->surfaceInfo.surfaceNormal.quad[2]);
+                                            Lane(bcc->surfaceInfo.surfaceNormal.quad, 0),
+                                            Lane(bcc->surfaceInfo.surfaceNormal.quad, 1),
+                                            Lane(bcc->surfaceInfo.surfaceNormal.quad, 2));
                                         slopeNow = (std::abs(normal.z) < 0.9f);
                                     }
 
